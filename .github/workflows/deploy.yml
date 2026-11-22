@@ -1,0 +1,76 @@
+name: Deploy to server
+
+# Uploads the site to the live server by FTP/FTPS.
+#
+# - Runs automatically when a pull request is merged into main (a push to main).
+# - Can also be run by hand from the Actions tab ("Run workflow"). A manual run
+#   is a DRY RUN by default: it lists what would change and uploads nothing.
+#   Untick "Dry run" to upload for real.
+#
+# The server details are kept in GitHub secrets, never in this file.
+# See docs/deploy.md for how to set them up.
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "README.md"
+      - "docs/**"
+      - ".github/**"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (list what would change, upload nothing)"
+        type: boolean
+        default: true
+
+# Never run two deployments at once.
+concurrency:
+  group: deploy-to-server
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Upload site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the site
+        uses: actions/checkout@v4
+
+      - name: Check the server settings exist
+        id: config
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          if [ -z "$FTP_SERVER" ] || [ -z "$FTP_USERNAME" ] || [ -z "$FTP_PASSWORD" ]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Server settings (FTP_SERVER, FTP_USERNAME, FTP_PASSWORD) are not set yet, so nothing was uploaded. See docs/deploy.md."
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload to the server
+        if: steps.config.outputs.configured == 'true'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ${{ vars.FTP_PROTOCOL || 'ftps' }}
+          server-dir: ${{ vars.FTP_SERVER_DIR || './' }}
+          dry-run: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+          # Only the website files go to the server. Files already on the server
+          # (for example WordPress) are left alone: this never deletes anything
+          # it did not upload itself.
+          exclude: |
+            **/.git*
+            **/.git*/**
+            .github/**
+            docs/**
+            README.md
+            .gitignore
