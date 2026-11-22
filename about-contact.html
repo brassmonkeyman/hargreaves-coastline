@@ -6,13 +6,15 @@
   <title>About &amp; Contact | Coastline Safety Services</title>
   <meta name="description" content="About Coastline Safety Services and how to contact us for thermal imaging or lightning conductor testing.">
   <link rel="stylesheet" href="styles.css">
+  <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
 
 <header class="site">
   <div class="container header-inner">
     <a class="brand" href="index.html"><img src="images/logo.webp" alt="Coastline Safety Services" height="56"></a>
-    <nav>
+    <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-nav"><span></span><span></span><span></span></button>
+    <nav id="site-nav">
       <ul>
         <li><a href="index.html">Home</a></li>
         <li><a href="thermal-imaging.html">Thermal Imaging</a></li>
@@ -95,5 +97,6 @@
   <div class="container footer-copy">&copy; 2026 Coastline Safety Services</div>
 </footer>
 
+<script src="menu.js" defer></script>
 </body>
 </html>

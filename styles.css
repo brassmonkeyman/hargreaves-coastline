@@ -39,7 +39,7 @@ header.site {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 14px 0;
+  padding: 14px 20px; /* keep the container's side padding so the header lines up with the page */
   flex-wrap: wrap;
 }
 .brand { display: inline-flex; align-items: center; text-decoration: none; }
@@ -190,10 +190,59 @@ footer .footer-copy {
   .hero h1 { font-size: 1.8rem; }
   section { padding: 28px 0; }
 
-  /* Compact, non-sticky header on phones */
-  header.site { position: static; }
-  .header-inner { padding: 10px 0; gap: 8px; }
+}
+
+/* Hamburger button: hidden on desktop, shown on phones (see below) */
+.nav-toggle {
+  display: none;
+  background: none;
+  border: 0;
+  padding: 10px;
+  margin: -10px;
+  cursor: pointer;
+}
+.nav-toggle span {
+  display: block;
+  width: 26px;
+  height: 3px;
+  background: var(--navy);
+  border-radius: 2px;
+  transition: transform 0.2s, opacity 0.2s;
+}
+.nav-toggle span + span { margin-top: 5px; }
+.nav-toggle.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+.nav-toggle.open span:nth-child(2) { opacity: 0; }
+.nav-toggle.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+.nav-toggle:focus-visible { outline: 3px solid var(--blue); outline-offset: 4px; border-radius: 4px; }
+
+/* Phones and small tablets: compact header, menu pops down from the hamburger.
+   Rules are scoped to html.js so the plain link list still shows without JavaScript. */
+@media (max-width: 760px) {
+  .header-inner { padding: 8px 20px; }
   .brand img { height: 44px; }
-  nav ul { gap: 14px; }
-  nav a { font-size: 0.88rem; }
+  html.js .header-inner { flex-wrap: nowrap; }
+  html.js .nav-toggle { display: block; }
+  html.js nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fefefe;
+    border-bottom: 1px solid #e1e8ee;
+    box-shadow: 0 12px 24px rgba(11, 37, 69, 0.18);
+    padding: 6px 20px 14px;
+  }
+  html.js nav.open { display: block; }
+  html.js nav ul { flex-direction: column; gap: 0; }
+  html.js nav li + li { border-top: 1px solid #e8eef2; }
+  html.js nav a { display: block; padding: 14px 4px; font-size: 1rem; }
+  html.js nav a:hover,
+  html.js nav a.active {
+    border-bottom: 0;
+    padding-bottom: 14px;
+    padding-left: 12px;
+    color: var(--blue-dark);
+    box-shadow: inset 3px 0 0 var(--blue);
+  }
 }

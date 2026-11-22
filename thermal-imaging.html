@@ -6,6 +6,7 @@
   <title>Thermal Imaging Surveys | Coastline Safety Services</title>
   <meta name="description" content="Thermographic inspections from Coastline Safety Services to find electrical faults early and reduce costly breakdowns.">
   <link rel="stylesheet" href="styles.css">
+  <script>document.documentElement.classList.add('js');</script>
   <style>
     .split { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
     .split img { width: auto; height: auto; max-width: 100%; margin: 0 auto; border-radius: var(--radius); }
@@ -18,7 +19,8 @@
 <header class="site">
   <div class="container header-inner">
     <a class="brand" href="index.html"><img src="images/logo.webp" alt="Coastline Safety Services" height="56"></a>
-    <nav>
+    <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-nav"><span></span><span></span><span></span></button>
+    <nav id="site-nav">
       <ul>
         <li><a href="index.html">Home</a></li>
         <li><a class="active" href="thermal-imaging.html">Thermal Imaging</a></li>
@@ -102,5 +104,6 @@
   <div class="container footer-copy">&copy; 2026 Coastline Safety Services</div>
 </footer>
 
+<script src="menu.js" defer></script>
 </body>
 </html>
