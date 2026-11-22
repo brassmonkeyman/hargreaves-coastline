@@ -177,6 +177,9 @@ footer .footer-copy {
   max-width: 100%;
   border-radius: var(--radius);
 }
+/* Photos shown at a fixed 250px height so a row of four fits on one line.
+   The large source photos are stored at 2x so they stay sharp. */
+.photo-row img.fit { height: 250px; width: auto; }
 
 @media (max-width: 640px) {
   .hero h1 { font-size: 1.8rem; }
