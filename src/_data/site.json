@@ -1,0 +1,23 @@
+{
+  "name": "Coastline Safety Services",
+  "strapline": "Thermal imaging and lightning conductor testing.",
+  "phone": "02382 448464",
+  "phoneLink": "tel:02382448464",
+  "email": "info@coastlinesafetyservices.co.uk",
+  "address": ["Enterprise House, Ocean Village", "Southampton, SO14 3XB"],
+  "year": 2026,
+
+  "nav": [
+    { "key": "home", "title": "Home", "url": "index.html" },
+    { "key": "thermal", "title": "Thermal Imaging", "url": "thermal-imaging.html" },
+    { "key": "lightning", "title": "Lightning Conductor Testing", "url": "lightning-conductor-testing.html" },
+    { "key": "about", "title": "About & Contact", "url": "about-contact.html" }
+  ],
+
+  "accreditations": [
+    { "name": "CSCS", "image": "images/accreditations/cscs.jpg", "width": 100, "height": 65 },
+    { "name": "EUSR", "image": "images/accreditations/eusr.jpg", "width": 100, "height": 65 },
+    { "name": "IHEEM", "image": "images/accreditations/iheem.jpg", "width": 100, "height": 65 },
+    { "name": "SafeContractor", "image": "images/accreditations/safecontractor.jpg", "width": 87, "height": 65 }
+  ]
+}

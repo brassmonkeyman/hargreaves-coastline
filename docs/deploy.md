@@ -1,11 +1,17 @@
 # Deploying to the live server
 
-The **Deploy to server** workflow uploads the site to your real server by FTP/FTPS.
+The **Build and deploy** workflow (`.github/workflows/deploy.yml`) builds the site
+from `src/` with Eleventy, then uploads the built pages to your real server by
+FTP/FTPS and publishes the same pages to the GitHub Pages preview.
 
 - **Automatic:** it runs when a pull request is merged into `main`.
-- **Manual:** open the repository's **Actions** tab, choose **Deploy to server**,
-  press **Run workflow**. A manual run is a *dry run* by default (it lists what
-  would change and uploads nothing). Untick **Dry run** to upload for real.
+- **Manual:** open the repository's **Actions** tab, choose **Build and deploy**,
+  press **Run workflow**. A manual run is a *dry run* by default (it builds the site
+  and lists what would change on the server, but publishes nothing). Untick
+  **Dry run** to publish for real.
+
+GitHub Pages must be set to publish from **GitHub Actions** (repository
+**Settings, Pages, Build and deployment, Source**). This was set up once already.
 
 So the flow is: change on a branch, review the pull request, merge it, and the
 merge publishes to the server. Closing a pull request without merging changes nothing.
@@ -39,7 +45,7 @@ Accounts**), limited to the website folder, rather than using your main login.
 ## First deployment: do a dry run
 
 1. Add the secrets (and variables if needed).
-2. **Actions, Deploy to server, Run workflow**, leave **Dry run** ticked.
+2. **Actions, Build and deploy, Run workflow**, leave **Dry run** ticked.
 3. Open the run and read the log. It should list the site files it would upload.
 4. If that looks right, run it again with **Dry run** unticked.
 5. Open https://coastlinesafetyservices.co.uk/ and check the new site shows.
@@ -55,10 +61,11 @@ Claude and the workflow can be adjusted.
 
 ## What gets uploaded
 
-Everything in the repository except the repository's own files: `.github/`, `docs/`,
-`README.md` and `.gitignore`. That is the four pages, `styles.css`, `menu.js` and the
-`images/` folder. The workflow also stores a small file `.ftp-deploy-sync-state.json`
-on the server so it can upload only what changed next time. Leave it there.
+Only the built site (the `_site/` folder the build creates): the four pages,
+`styles.css`, `menu.js`, `form.js`, `contact.php` and the `images/` folder. Source
+files such as the layout, `site.json`, `README.md` and `docs/` are never uploaded.
+The workflow also stores a small file `.ftp-deploy-sync-state.json` on the server so
+it can upload only what changed next time. Leave it there.
 
 ## If something goes wrong
 
