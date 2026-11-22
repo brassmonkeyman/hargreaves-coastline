@@ -29,11 +29,25 @@ close the pull request without merging.
 | `about-contact.html` | About and contact page |
 | `styles.css` | All styling |
 | `menu.js` | Phone menu (hamburger button) |
+| `form.js` | Contact form: sends without leaving the page and shows messages |
+| `contact.php` | Contact form handler: emails enquiries (needs PHP on the server) |
 | `images/` | Logo and photos |
+
+## Contact form
+
+The form on the About & Contact page posts to `contact.php`, which emails the
+enquiry to `info@coastlinesafetyservices.co.uk` with the visitor's address as
+Reply-To, so you can answer by replying. Nothing is stored. To change where
+enquiries go, edit the settings at the top of `contact.php`.
+
+Spam protection: a hidden "trap" field, a minimum time on the page, and a limit
+of five messages per hour from one connection.
+
+The form only works on the real server, because GitHub Pages cannot run PHP. On
+the GitHub Pages copy it shows a message asking visitors to call or email instead.
 
 ## Still to finish
 
 - Accreditations and qualifications (hidden placeholder notes are in the pages;
   see `.placeholder` in `styles.css`)
-- Contact form is not connected to anything yet
 - Confirm the BS EN 62305 wording on the lightning page

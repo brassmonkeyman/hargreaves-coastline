@@ -43,7 +43,7 @@
     </div>
   </section>
 
-  <section class="alt">
+  <section class="alt" id="contact">
     <div class="container">
       <h2>Contact us</h2>
       <div class="contact-box">
@@ -53,15 +53,35 @@
           <p><strong>Address:</strong><br>Enterprise House<br>Ocean Village<br>Southampton<br>SO14 3XB</p>
         </div>
         <div>
-          <form action="#" method="post" onsubmit="event.preventDefault(); alert('Form not connected yet. Please call 02382 448464.');">
-            <label for="name">Name</label>
-            <input id="name" name="name" type="text" required>
-            <label for="email">Email</label>
-            <input id="email" name="email" type="email" required>
+          <div id="form-status" class="form-status" role="status" aria-live="polite" tabindex="-1" hidden></div>
+          <form id="enquiry-form" action="contact.php" method="post">
+            <label for="name">Name <span class="req" aria-hidden="true">*</span></label>
+            <input id="name" name="name" type="text" autocomplete="name" maxlength="100" required>
+
+            <label for="email">Email <span class="req" aria-hidden="true">*</span></label>
+            <input id="email" name="email" type="email" autocomplete="email" maxlength="254" required>
+
+            <label for="phone">Phone <span class="optional">(optional)</span></label>
+            <input id="phone" name="phone" type="tel" autocomplete="tel" maxlength="30">
+
             <label for="service">Service</label>
-            <input id="service" name="service" type="text" placeholder="Thermal imaging or lightning conductor testing">
-            <label for="message">Message</label>
-            <textarea id="message" name="message" required></textarea>
+            <select id="service" name="service">
+              <option value="thermal">Thermal imaging survey</option>
+              <option value="lightning">Lightning conductor testing</option>
+              <option value="both">Both services</option>
+              <option value="other">Something else</option>
+            </select>
+
+            <label for="message">Message <span class="req" aria-hidden="true">*</span></label>
+            <textarea id="message" name="message" rows="6" maxlength="5000" minlength="5" required placeholder="Tell us about your site and what you need."></textarea>
+
+            <!-- Spam trap: hidden from visitors, bots tend to fill it in. -->
+            <div class="hp" aria-hidden="true">
+              <label for="website">Leave this field empty</label>
+              <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
+            </div>
+
+            <p class="form-note">Fields marked * are required. We only use your details to reply to your enquiry.</p>
             <button class="btn" type="submit">Send Enquiry</button>
           </form>
         </div>
@@ -98,5 +118,6 @@
 </footer>
 
 <script src="menu.js" defer></script>
+<script src="form.js" defer></script>
 </body>
 </html>
