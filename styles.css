@@ -181,6 +181,24 @@ footer .footer-copy {
 }
 @media (max-width: 760px) { footer .footer-grid { grid-template-columns: 1fr; } }
 
+/* Accreditation logos: white tiles so the logos' own white backgrounds blend in */
+footer .footer-accreditations { margin-top: 28px; }
+footer .logo-row { display: flex; flex-wrap: wrap; gap: 12px; }
+footer .logo-row li {
+  margin: 0;
+  background: #fff;
+  border-radius: 6px;
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+}
+footer .logo-row img { height: 52px; width: auto; }
+@media (max-width: 760px) {
+  footer .logo-row { gap: 8px; }
+  footer .logo-row li { padding: 5px 6px; }
+  footer .logo-row img { height: 40px; }
+}
+
 /* Call-to-action band */
 .cta-band { background: var(--navy); color: #fff; text-align: center; }
 .cta-band h2 { color: #fff; }
