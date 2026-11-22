@@ -70,7 +70,7 @@ nav a:hover, nav a.active { color: var(--blue-dark); border-bottom: 2px solid va
 .btn.secondary { background: transparent; color: #fff; border: 2px solid #fff; }
 
 /* Sections */
-section { padding: 64px 0; }
+section { padding: 40px 0; }
 section.alt { background: var(--soft); }
 h2 { color: var(--navy); font-size: 1.8rem; margin: 0 0 16px; }
 h3 { color: var(--navy); margin: 0 0 8px; }
@@ -128,7 +128,7 @@ form input, form textarea {
 form textarea { min-height: 120px; resize: vertical; }
 
 /* Page hero (inner pages) */
-.page-hero { background: var(--soft); padding: 56px 0 40px; border-bottom: 1px solid #e1e8ee; }
+.page-hero { background: var(--soft); padding: 40px 0 28px; border-bottom: 1px solid #e1e8ee; }
 .page-hero h1 { color: var(--navy); font-size: 2.1rem; margin: 0 0 8px; }
 
 footer.site {
@@ -180,7 +180,7 @@ footer .footer-copy {
 
 @media (max-width: 640px) {
   .hero h1 { font-size: 1.8rem; }
-  section { padding: 44px 0; }
+  section { padding: 28px 0; }
 
   /* Compact, non-sticky header on phones */
   header.site { position: static; }
