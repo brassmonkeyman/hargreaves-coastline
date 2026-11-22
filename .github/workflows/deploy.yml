@@ -1,14 +1,15 @@
-name: Deploy to server
+name: Build and deploy
 
-# Uploads the site to the live server by FTP/FTPS.
+# Builds the site from src/ with Eleventy, then publishes the built pages to:
+#   - the live server by FTP/FTPS (coastlinesafetyservices.co.uk)
+#   - GitHub Pages (the preview copy)
 #
 # - Runs automatically when a pull request is merged into main (a push to main).
-# - Can also be run by hand from the Actions tab ("Run workflow"). A manual run
-#   is a DRY RUN by default: it lists what would change and uploads nothing.
-#   Untick "Dry run" to upload for real.
+# - Can also be run by hand from the Actions tab ("Run workflow"). A manual run is
+#   a DRY RUN by default: it builds the site and lists what would change on the
+#   server, but uploads nothing. Untick "Dry run" to publish for real.
 #
-# The server details are kept in GitHub secrets, never in this file.
-# See docs/deploy.md for how to set them up.
+# Server details are kept in GitHub secrets, never in this file. See docs/deploy.md.
 
 on:
   push:
@@ -16,29 +17,64 @@ on:
     paths-ignore:
       - "README.md"
       - "docs/**"
-      - ".github/**"
+      - ".github/pull_request_template.md"
   workflow_dispatch:
     inputs:
       dry_run:
-        description: "Dry run (list what would change, upload nothing)"
+        description: "Dry run (build and list what would change, publish nothing)"
         type: boolean
         default: true
 
 # Never run two deployments at once.
 concurrency:
-  group: deploy-to-server
+  group: deploy
   cancel-in-progress: false
 
 permissions:
   contents: read
 
 jobs:
-  deploy:
-    name: Upload site
+  build:
+    name: Build site
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the site
+      - name: Check out the source
         uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install Eleventy
+        run: npm ci
+
+      - name: Build the pages into _site
+        run: npx eleventy
+
+      - name: Keep the built site for the server upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: _site/
+          retention-days: 7
+
+      - name: Package the built site for GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site/
+
+  deploy-server:
+    name: Upload to live server
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the built site
+        uses: actions/download-artifact@v4
+        with:
+          name: site
+          path: _site/
 
       - name: Check the server settings exist
         id: config
@@ -49,7 +85,7 @@ jobs:
         run: |
           if [ -z "$FTP_SERVER" ] || [ -z "$FTP_USERNAME" ] || [ -z "$FTP_PASSWORD" ]; then
             echo "configured=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::Server settings (FTP_SERVER, FTP_USERNAME, FTP_PASSWORD) are not set yet, so nothing was uploaded. See docs/deploy.md."
+            echo "::notice::Server settings (FTP_SERVER, FTP_USERNAME, FTP_PASSWORD) are not set, so nothing was uploaded. See docs/deploy.md."
           else
             echo "configured=true" >> "$GITHUB_OUTPUT"
           fi
@@ -62,15 +98,25 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ${{ vars.FTP_PROTOCOL || 'ftps' }}
+          local-dir: ./_site/
           server-dir: ${{ vars.FTP_SERVER_DIR || './' }}
           dry-run: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
-          # Only the website files go to the server. Files already on the server
-          # (for example WordPress) are left alone: this never deletes anything
-          # it did not upload itself.
-          exclude: |
-            **/.git*
-            **/.git*/**
-            .github/**
-            docs/**
-            README.md
-            .gitignore
+          # Only the built site is uploaded. Files already on the server that this
+          # workflow did not upload (for example WordPress) are left alone.
+
+  deploy-pages:
+    name: Publish GitHub Pages preview
+    needs: build
+    # Skip on a manual dry run.
+    if: github.event_name == 'push' || inputs.dry_run == false
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publish to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

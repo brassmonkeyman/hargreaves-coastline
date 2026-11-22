@@ -59,6 +59,12 @@ nav a:hover, nav a.active { color: var(--blue-dark); border-bottom: 2px solid va
 .hero-split { display: grid; grid-template-columns: 1.05fr 1fr; gap: 40px; align-items: center; }
 .hero-split img { width: 100%; height: auto; border-radius: var(--radius); box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28); }
 @media (max-width: 760px) { .hero-split { grid-template-columns: 1fr; gap: 28px; } }
+
+/* Two-column text and image layout (Thermal Imaging page) */
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+.split img { width: auto; height: auto; max-width: 100%; margin: 0 auto; border-radius: var(--radius); }
+.split p { margin-top: 0; }
+@media (max-width: 760px) { .split { grid-template-columns: 1fr; } }
 .hero h1 { font-size: 2.4rem; margin: 0 0 12px; line-height: 1.2; }
 .hero p { font-size: 1.15rem; max-width: 640px; margin: 0 0 24px; color: #e3eef4; }
 .btn {

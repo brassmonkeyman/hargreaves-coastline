@@ -1,0 +1,73 @@
+{#- Shared layout for every page: <head>, header with menu, footer and scripts.
+    Each page supplies: title, description, nav (which menu item to highlight),
+    and optionally scripts (extra script files). Contact details, menu items and
+    accreditation logos come from src/_data/site.json. -#}
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title }}</title>
+  <meta name="description" content="{{ description }}">
+  <link rel="stylesheet" href="styles.css">
+  <script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+<header class="site">
+  <div class="container header-inner">
+    <a class="brand" href="index.html"><img src="images/logo.webp" alt="{{ site.name }}" height="56"></a>
+    <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-nav"><span></span><span></span><span></span></button>
+    <nav id="site-nav">
+      <ul>
+{%- for item in site.nav %}
+        <li><a {% if item.key == nav %}class="active" {% endif %}href="{{ item.url }}">{{ item.title }}</a></li>
+{%- endfor %}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+{{ content | safe }}
+</main>
+
+<footer class="site">
+  <div class="container footer-grid">
+    <div>
+      <h4>{{ site.name }}</h4>
+      <p style="margin:0;">{{ site.strapline }}<br>
+      {{ site.address | join("<br>") | safe }}</p>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="{{ site.phoneLink }}">{{ site.phone }}</a></li>
+        <li><a href="mailto:{{ site.email }}">{{ site.email }}</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Pages</h4>
+      <ul>
+{%- for item in site.nav %}
+        <li><a href="{{ item.url }}">{{ item.title }}</a></li>
+{%- endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container footer-accreditations">
+    <ul class="logo-row" aria-label="Accreditations">
+{%- for logo in site.accreditations %}
+      <li><img src="{{ logo.image }}" alt="{{ logo.name }}" width="{{ logo.width }}" height="{{ logo.height }}" loading="lazy"></li>
+{%- endfor %}
+    </ul>
+  </div>
+  <div class="container footer-copy">&copy; {{ site.year }} {{ site.name }}</div>
+</footer>
+
+<script src="menu.js" defer></script>
+{%- for file in scripts %}
+<script src="{{ file }}" defer></script>
+{%- endfor %}
+</body>
+</html>
