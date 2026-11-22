@@ -1,7 +1,8 @@
 :root {
-  --navy: #4a4e57;   /* logo charcoal: headings, header text */
-  --blue: #0aa0a6;   /* logo teal: links, active nav, buttons */
-  --accent: #86d9dc; /* logo light aqua: highlights */
+  --navy: #494f58;      /* logo charcoal (sampled from the logo): headings, text */
+  --blue: #01a1ab;      /* logo teal (sampled): accents, card borders, hero */
+  --blue-dark: #087f88; /* darker teal for buttons and links so white text stays readable */
+  --accent: #86d9dc;    /* logo light aqua: highlights */
   --bg: #ffffff;
   --soft: #f3f6f8;
   --text: #1d2a33;
@@ -20,12 +21,12 @@ body {
   line-height: 1.6;
 }
 img { max-width: 100%; display: block; }
-a { color: var(--blue); }
+a { color: var(--blue-dark); }
 .container { max-width: var(--max); margin: 0 auto; padding: 0 20px; }
 
 /* Header */
 header.site {
-  background: #fff;
+  background: #fefefe; /* same as the logo's own background, so no box shows */
   color: var(--text);
   position: sticky;
   top: 0;
@@ -45,7 +46,7 @@ header.site {
 .brand img { height: 56px; width: auto; }
 nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 20px; flex-wrap: wrap; }
 nav a { color: var(--navy); text-decoration: none; font-size: 0.95rem; font-weight: 600; }
-nav a:hover, nav a.active { color: var(--blue); border-bottom: 2px solid var(--blue); padding-bottom: 2px; }
+nav a:hover, nav a.active { color: var(--blue-dark); border-bottom: 2px solid var(--blue); padding-bottom: 2px; }
 
 /* Hero */
 .hero {
@@ -57,7 +58,7 @@ nav a:hover, nav a.active { color: var(--blue); border-bottom: 2px solid var(--b
 .hero p { font-size: 1.15rem; max-width: 640px; margin: 0 0 24px; color: #e3eef4; }
 .btn {
   display: inline-block;
-  background: var(--blue);
+  background: var(--blue-dark);
   color: #fff;
   font-weight: 700;
   padding: 12px 22px;
@@ -90,7 +91,10 @@ h3 { color: var(--navy); margin: 0 0 8px; }
 }
 .card a.more { font-weight: 600; text-decoration: none; }
 
+/* Draft notes for content still to come. Hidden on the live site; delete this
+   line (display: none) to show them again while editing. */
 .placeholder {
+  display: none;
   background: #fff8e6;
   border: 1px dashed var(--accent);
   border-radius: var(--radius);
@@ -133,8 +137,30 @@ footer.site {
   padding: 32px 0;
   font-size: 0.92rem;
 }
+footer.site { padding: 44px 0 20px; background: #363b43; } /* a shade darker than the CTA band above it */
 footer.site a { color: #fff; }
-footer .cols { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+footer .footer-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 32px;
+}
+footer h4 { color: #fff; margin: 0 0 10px; font-size: 1rem; }
+footer ul { list-style: none; margin: 0; padding: 0; }
+footer li { margin-bottom: 6px; }
+footer .footer-copy {
+  margin-top: 28px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  font-size: 0.85rem;
+}
+@media (max-width: 760px) { footer .footer-grid { grid-template-columns: 1fr; } }
+
+/* Call-to-action band */
+.cta-band { background: var(--navy); color: #fff; text-align: center; }
+.cta-band h2 { color: #fff; }
+.cta-band .lead { color: #dfe7ec; margin: 0 auto 24px; }
+.cta-band .btn { background: var(--accent); color: var(--navy); }
+.cta-band .btn.secondary { background: transparent; color: #fff; }
 
 /* Photo rows: show photos at their natural size so they stay sharp */
 .photo-row {
