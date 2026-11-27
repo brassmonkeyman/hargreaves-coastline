@@ -83,6 +83,11 @@ npm start
 Then open the address it prints (usually http://localhost:8080). Pages rebuild as
 you save. `npm run build` builds once into `_site/` without starting a preview.
 
+If you ever reinstall or update packages on Windows, run `npm prune` before
+committing `package-lock.json`. npm on Windows can add packages nobody needs
+(including a Mac-only one), which makes the GitHub build fail with
+`EBADPLATFORM ... fsevents`.
+
 ## Contact form
 
 The form on the About & Contact page posts to `contact.php`, which emails the
