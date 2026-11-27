@@ -8,6 +8,11 @@ export default function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/form.js");
   eleventyConfig.addPassthroughCopy("src/contact.php");
   eleventyConfig.addPassthroughCopy("src/images");
+  // Browser tab and home-screen icons (made from the logo's emblem).
+  eleventyConfig.addPassthroughCopy("src/favicon.ico");
+  eleventyConfig.addPassthroughCopy("src/icon-192.png");
+  eleventyConfig.addPassthroughCopy("src/icon-512.png");
+  eleventyConfig.addPassthroughCopy("src/apple-touch-icon.png");
 
   // Keep the existing addresses: src/about-contact.html -> about-contact.html
   // (Eleventy would otherwise make about-contact/index.html).

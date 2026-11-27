@@ -40,6 +40,7 @@ Everything that makes up the site is in `src/`. The built site goes to `_site/`
 | `src/form.js` | Contact form: sends without leaving the page and shows messages |
 | `src/contact.php` | Contact form handler: emails enquiries (needs PHP on the server) |
 | `src/images/` | Logo, photos and accreditation logos |
+| `src/favicon.ico`, `src/icon-*.png`, `src/apple-touch-icon.png` | Browser tab and home-screen icons, made from the logo's emblem |
 | `eleventy.config.js` | Build settings |
 
 ### Common edits
