@@ -67,6 +67,27 @@ files such as the layout, `site.json`, `README.md` and `docs/` are never uploade
 The workflow also stores a small file `.ftp-deploy-sync-state.json` on the server so
 it can upload only what changed next time. Leave it there.
 
+## HTTPS redirect and HSTS (`.htaccess`)
+
+Each deploy also manages the server's `.htaccess` file, which:
+
+- redirects every `http://` address to the same `https://` address (permanent, 301)
+- sends a `Strict-Transport-Security` (HSTS) header, so browsers always use https
+  for this site for a year (subdomains are not included)
+
+It does not replace the server's file. It downloads the existing `.htaccess`, puts
+these rules in a section marked `# BEGIN Coastline Safety Services` ...
+`# END Coastline Safety Services` at the top, keeps everything else unchanged, and
+uploads the result. Anything you add to `.htaccess` yourself (for example through
+the hosting control panel) survives, as long as it is outside that section. If the
+existing file cannot be read, the deploy stops and uploads nothing.
+
+To read the existing file securely, the deploy checks the FTP server's certificate.
+GoDaddy's server uses the certificate for `*.prod.sxb1.secureserver.net`, which is
+the default. If the host ever moves the site and the deploy fails with a certificate
+error (`curl: (60)`), add a repository variable `FTP_TLS_NAME` with the name on the
+new certificate.
+
 ## If something goes wrong
 
 - **Login failed:** check the secrets, and whether your host wants `ftp` rather than `ftps`.

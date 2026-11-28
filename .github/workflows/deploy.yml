@@ -90,6 +90,54 @@ jobs:
             echo "configured=true" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Get the .htaccess merge script
+        if: steps.config.outputs.configured == 'true'
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github/scripts
+          path: repo
+
+      # HTTPS redirect and HSTS header. The server already has a .htaccess (from
+      # WordPress and possibly the host, such as the PHP version), so download it,
+      # add our rules in a marked section at the top, keep everything else, and
+      # upload the result with the site. If it cannot be read, stop rather than
+      # risk replacing it. The file's contents are never printed (public log).
+      - name: Add HTTPS rules to the server's .htaccess
+        if: steps.config.outputs.configured == 'true'
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_SERVER_DIR: ${{ vars.FTP_SERVER_DIR || './' }}
+          FTP_PROTOCOL: ${{ vars.FTP_PROTOCOL || 'ftps' }}
+          # The FTP server's certificate is GoDaddy's shared-server certificate
+          # (*.prod.sxb1.secureserver.net), not one for FTP_SERVER. Connect to
+          # FTP_SERVER but check the certificate against this name, so the
+          # server's identity is still verified. Override with a repository
+          # variable FTP_TLS_NAME if the host ever moves the site.
+          FTP_TLS_NAME: ${{ vars.FTP_TLS_NAME || 'prod.sxb1.secureserver.net' }}
+        run: |
+          dir="${FTP_SERVER_DIR#./}"
+          if [ "$FTP_PROTOCOL" = "ftp" ]; then
+            url="ftp://$FTP_SERVER/${dir}.htaccess"; opts=()
+          else
+            url="ftp://$FTP_TLS_NAME/${dir}.htaccess"
+            opts=(--ssl-reqd --connect-to "$FTP_TLS_NAME:21:$FTP_SERVER:21")
+          fi
+          set +e
+          curl --silent --show-error "${opts[@]}" --user "$FTP_USERNAME:$FTP_PASSWORD" "$url" -o existing.htaccess
+          code=$?
+          set -e
+          if [ "$code" -eq 78 ]; then
+            : > existing.htaccess
+            echo "The server has no .htaccess yet."
+          elif [ "$code" -ne 0 ]; then
+            echo "::error::Could not read the server's .htaccess (curl exit code $code), so nothing was uploaded."
+            exit 1
+          fi
+          python3 repo/.github/scripts/merge_htaccess.py existing.htaccess _site/.htaccess
+          rm -f existing.htaccess
+
       - name: Upload to the server
         if: steps.config.outputs.configured == 'true'
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
