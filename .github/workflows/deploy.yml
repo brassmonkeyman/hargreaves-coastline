@@ -110,12 +110,22 @@ jobs:
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           FTP_SERVER_DIR: ${{ vars.FTP_SERVER_DIR || './' }}
           FTP_PROTOCOL: ${{ vars.FTP_PROTOCOL || 'ftps' }}
+          # The FTP server's certificate is GoDaddy's shared-server certificate
+          # (*.prod.sxb1.secureserver.net), not one for FTP_SERVER. Connect to
+          # FTP_SERVER but check the certificate against this name, so the
+          # server's identity is still verified. Override with a repository
+          # variable FTP_TLS_NAME if the host ever moves the site.
+          FTP_TLS_NAME: ${{ vars.FTP_TLS_NAME || 'prod.sxb1.secureserver.net' }}
         run: |
           dir="${FTP_SERVER_DIR#./}"
-          if [ "$FTP_PROTOCOL" = "ftp" ]; then tls=""; else tls="--ssl-reqd"; fi
+          if [ "$FTP_PROTOCOL" = "ftp" ]; then
+            url="ftp://$FTP_SERVER/${dir}.htaccess"; opts=()
+          else
+            url="ftp://$FTP_TLS_NAME/${dir}.htaccess"
+            opts=(--ssl-reqd --connect-to "$FTP_TLS_NAME:21:$FTP_SERVER:21")
+          fi
           set +e
-          curl --silent --show-error $tls --user "$FTP_USERNAME:$FTP_PASSWORD" \
-            "ftp://$FTP_SERVER/${dir}.htaccess" -o existing.htaccess
+          curl --silent --show-error "${opts[@]}" --user "$FTP_USERNAME:$FTP_PASSWORD" "$url" -o existing.htaccess
           code=$?
           set -e
           if [ "$code" -eq 78 ]; then
